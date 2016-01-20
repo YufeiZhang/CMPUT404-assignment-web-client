@@ -37,6 +37,8 @@ class HTTPClient(object):
 
     def connect(self, host, port):
         # use sockets!
+        if True:
+            pass
         return None
 
     def get_code(self, data):
