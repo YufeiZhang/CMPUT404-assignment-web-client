@@ -56,8 +56,7 @@ class HTTPClient(object):
 
     def get_code(self, data):
         print("in def 2")
-        print(data.split()[1])
-        print("def 2 is done!")
+        print("def 2 is done!\n")
         return data.split()[1]
 
     def get_headers(self,data):
