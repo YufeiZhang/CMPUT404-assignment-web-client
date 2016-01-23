@@ -34,7 +34,7 @@ class HTTPRequest(object):
 
 class HTTPClient(object):
     #def get_host_port(self,url):
-		# start doing assignment 2 in lab
+
     def connect(self, host, port):
         # use sockets!
         if True:
