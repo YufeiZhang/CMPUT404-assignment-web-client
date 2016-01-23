@@ -56,19 +56,19 @@ class HTTPClient(object):
 
     def get_code(self, data):
         print("in def 2")
-        print"data is ------------> ", data
-
+        #print"data is ------------>\n", data, "\n<--------------"
+        print
         return None
 
     def get_headers(self,data):
         print("in def 3")
-        print("The data is printed like this2:")
+        print
         #print(data.split('\r\n\r\n'))
         return None
 
     def get_body(self, data):
         print("in def 4")
-        print("The data is printed like this3:")
+        print
         return None
 
     # read everything from the socket
@@ -95,12 +95,11 @@ class HTTPClient(object):
         incomingSocket = self.connect(parseResult.hostname, parseResult.port)
 
         print("\nBack to def 6")
-        request = "GET %s HTTP/1.1\r\n\
-                   Host: %s\r\n\
-                   Accept: */*\r\n\
-                   Connection: close\r\n\r\n"\
-                   % (parseResult.path, parseResult.hostname)
+        request = \
+        "GET %s HTTP/1.1\r\nHost: %s\r\nAccept: */*\r\nConnection: close\r\n\r\n"\
+        % (parseResult.path, parseResult.hostname)
         print(request)
+
         incomingSocket.send(request)
 
         response = self.recvall(incomingSocket)
