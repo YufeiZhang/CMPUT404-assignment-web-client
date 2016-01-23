@@ -68,8 +68,8 @@ class HTTPClient(object):
 
     def get_body(self, data):
         print("in def 4")
-        print
-        return None
+        print ("def 4 is done!\n")
+        return data.split("\r\n\r\n")[1]
 
     # read everything from the socket
     def recvall(self, sock):
@@ -107,8 +107,8 @@ class HTTPClient(object):
         code = self.get_code(response)
         body = self.get_body(response)
 
-        print(code, body)
-        print("------------------------------")
+        #print(code, body)
+        #print("------------------------------")
 
         return HTTPRequest(code, body)
 
