@@ -19,13 +19,16 @@
 # The point is to understand what you have to send and get experience with it
 
 # using for testing and debugging:
-# python httpclient.py GET "https://www.google.ca"
+# python httpclient.py GET "https://www.google.ca/"
 
 import sys
 import socket
 import re
 # you may use urllib to encode data appropriately
 import urllib
+
+# get help from https://docs.python.org/2/library/urlparse.html
+from urlparse import urlparse
 
 def help():
     print "httpclient.py [GET/POST] [URL]\n"
@@ -43,6 +46,7 @@ class HTTPClient(object):
         print("in def 1")
         # use sockets!
         if not port:
+            print("port == None")
             port = 80
 
         outgoingSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -52,8 +56,7 @@ class HTTPClient(object):
 
     def get_code(self, data):
         print("in def 2")
-        print("The data is printed like this1:")
-        print(data)
+        print"data is ------------> ", data
 
         return None
 
@@ -84,9 +87,29 @@ class HTTPClient(object):
     def GET(self, url, args=None):
         print("in def 6")
         print("URL ->", url)
-        print 
-        code = 500
-        body = ""
+
+        parseResult = urlparse(url)
+        print(parseResult)
+        print
+
+        incomingSocket = self.connect(parseResult.hostname, parseResult.port)
+
+        print("\nBack to def 6")
+        request = "GET %s HTTP/1.1\r\n\
+                   Host: %s\r\n\
+                   Accept: */*\r\n\
+                   Connection: close\r\n\r\n"\
+                   % (parseResult.path, parseResult.hostname)
+        print(request)
+        incomingSocket.send(request)
+
+        response = self.recvall(incomingSocket)
+        code = self.get_code(response)
+        body = self.get_body(response)
+
+        print(code, body)
+        print("------------------------------")
+
         return HTTPRequest(code, body)
 
     def POST(self, url, args=None):
