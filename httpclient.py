@@ -18,6 +18,9 @@
 # Write your own HTTP GET and POST
 # The point is to understand what you have to send and get experience with it
 
+# using for testing and debugging:
+# python httpclient.py GET "https://www.google.ca"
+
 import sys
 import socket
 import re
@@ -81,6 +84,7 @@ class HTTPClient(object):
     def GET(self, url, args=None):
         print("in def 6")
         print("URL ->", url)
+        print 
         code = 500
         body = ""
         return HTTPRequest(code, body)
@@ -92,7 +96,7 @@ class HTTPClient(object):
         return HTTPRequest(code, body)
 
     def command(self, command, url, args=None):
-        print("in def 8, command do not need to change")
+        print "\nCommand in client.command is:", command, '\n'
         if (command == "POST"):
             return self.POST( url, args )
         else:
@@ -105,8 +109,6 @@ if __name__ == "__main__":
         help()
         sys.exit(1)
     elif (len(sys.argv) == 3):
-        print(sys.argv[1])
-        print(sys.argv[2])
         print client.command( sys.argv[1], sys.argv[2] )
     else:
         print client.command( command, sys.argv[1] )    
