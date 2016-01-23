@@ -28,7 +28,7 @@ def help():
     print "httpclient.py [GET/POST] [URL]\n"
 
 class HTTPRequest(object):
-    print("in HTTPRequest")
+    print("in HTTPRequest but this class we do not need to change.")
     def __init__(self, code=200, body=""):
         self.code = code
         self.body = body
@@ -80,6 +80,7 @@ class HTTPClient(object):
 
     def GET(self, url, args=None):
         print("in def 6")
+        print("URL ->", url)
         code = 500
         body = ""
         return HTTPRequest(code, body)
@@ -90,8 +91,8 @@ class HTTPClient(object):
         body = ""
         return HTTPRequest(code, body)
 
-    def command(self, url, command="GET", args=None):
-        print("in def 8")
+    def command(self, command, url, args=None):
+        print("in def 8, command do not need to change")
         if (command == "POST"):
             return self.POST( url, args )
         else:
