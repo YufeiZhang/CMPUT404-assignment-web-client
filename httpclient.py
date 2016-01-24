@@ -29,12 +29,7 @@ import urllib
 
 # get help from https://docs.python.org/2/library/urlparse.html
 from urlparse import urlparse
-import sys
-import socket
-import re
-# you may use urllib to encode data appropriately
-import urllib
-from urlparse import urlparse
+
 
 def help():
     print "httpclient.py [GET/POST] [URL]\n"
@@ -96,7 +91,7 @@ class HTTPClient(object):
         else:
             postContent = ""
         postContentLength = len(postContent)
-        
+
         parseResult    = urlparse(url)
         incomingSocket = self.connect(parseResult.hostname, parseResult.port)
         
