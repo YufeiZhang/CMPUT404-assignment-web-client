@@ -50,13 +50,13 @@ class HTTPClient(object):
         return outgoingSocket
 
     def get_code(self, data):
-        return data.split()[1]
+        return data.split(' ', 2)[1]
 
     def get_headers(self,data):
         return data.split('\r\n\r\n')[0]
 
     def get_body(self, data):
-        return data.split('\r\n\r\n')[1]
+        return data.split('\r\n\r\n', 2)[1]
 
     # read everything from the socket
     def recvall(self, sock):
@@ -73,7 +73,6 @@ class HTTPClient(object):
     def GET(self, url, args=None):
         parseResult    = urlparse(url)
         incomingSocket = self.connect(parseResult.hostname,parseResult.port)
-
         request = "GET " + parseResult.path + " HTTP/1.1\r\n" \
                 + "Host: " + parseResult.hostname + "\r\n"    \
                 + "Accept: */*\r\n"                           \
@@ -94,7 +93,6 @@ class HTTPClient(object):
         postContentLength = len(postContent)
         parseResult       = urlparse(url)
         incomingSocket    = self.connect(parseResult.hostname,parseResult.port)
-
         request = "POST " + parseResult.path + " HTTP/1.1\r\n"             \
                 + "Host: " + parseResult.hostname + "\r\n"                 \
                 + "Accept: */*\r\n"                                        \
@@ -106,6 +104,8 @@ class HTTPClient(object):
         response = self.recvall(incomingSocket)
         code     = self.get_code(response)
         body     = self.get_body(response)
+        #print(code)
+        #print(body)
         return HTTPRequest(code, body)
 
     def command(self, command, url, args=None):
