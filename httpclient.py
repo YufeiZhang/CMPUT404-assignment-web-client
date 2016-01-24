@@ -103,8 +103,9 @@ class HTTPClient(object):
                 + postContent + "\r\n"
         incomingSocket.send(request)
 
-        code = 500
-        body = ""
+        response = self.recvall(incomingSocket)
+        code     = self.get_code(response)
+        body     = self.get_body(response)
         return HTTPRequest(code, body)
 
     def command(self, command, url, args=None):
