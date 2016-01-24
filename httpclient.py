@@ -72,7 +72,7 @@ class HTTPClient(object):
 
     def GET(self, url, args=None):
         parseResult    = urlparse(url)
-        incomingSocket = self.connect(parseResult.hostname, parseResult.port)
+        incomingSocket = self.connect(parseResult.hostname,parseResult.port)
 
         request = "GET " + parseResult.path + " HTTP/1.1\r\n" \
                 + "Host: " + parseResult.hostname + "\r\n"    \
@@ -86,7 +86,23 @@ class HTTPClient(object):
         return HTTPRequest(code, body)
 
     def POST(self, url, args=None):
-        print("in def 7")
+        if (args !=  None):
+            postContent = urllib.urlencode(args)
+        else:
+            postContent = ""
+
+        postContentLength = len(postContent)
+        parseResult       = urlparse(url)
+        incomingSocket    = self.connect(parseResult.hostname,parseResult.port)
+
+        request = "POST " + parseResult.path + " HTTP/1.1\r\n"             \
+                + "Host: " + parseResult.hostname + "\r\n"                 \
+                + "Accept: */*\r\n"                                        \
+                + "Content-Type: application/x-www-form-urlencoded\r\n"    \
+                + "Content-Length: " + str(postContentLength) + "\r\n\r\n" \
+                + postContent + "\r\n"
+        incomingSocket.send(request)
+
         code = 500
         body = ""
         return HTTPRequest(code, body)
