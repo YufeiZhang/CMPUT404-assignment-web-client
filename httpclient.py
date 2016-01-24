@@ -30,7 +30,6 @@ import urllib
 # get help from https://docs.python.org/2/library/urlparse.html
 from urlparse import urlparse
 
-
 def help():
     print "httpclient.py [GET/POST] [URL]\n"
 
@@ -40,25 +39,24 @@ class HTTPRequest(object):
         self.body = body
 
 class HTTPClient(object):
-    #def get_host_port(self,url):
-
     def connect(self, host, port):
-        # use sockets!
+        # use sockets! If port is None, set port as 80
         if not port:
-            port = 80       
+            port = 80
+        # connect it as what was shown in lab      
         outgoingSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         outgoingSocket.connect((host, port))
         return outgoingSocket
 
     def get_code(self, data):
+        # return the code
         return int(data.split()[1])
 
-    def get_headers(self,data):
-        return data.split('\r\n\r\n')[0]
-
     def get_body(self, data):
+        # return the whole html from "<!DOCTYPE html..." to "...</body>" 
         return data.split('\r\n\r\n')[1]
 
+    # read everything from the socket
     def recvall(self, sock):
         buffer = bytearray()
         done = False
@@ -71,31 +69,37 @@ class HTTPClient(object):
         return str(buffer)
 
     def GET(self, url, args=None):
+        # use urlparse to get ParseRequest
         parseResult    = urlparse(url)
         incomingSocket = self.connect(parseResult.hostname, parseResult.port)
         
-        request = "GET " + parseResult.path + " HTTP/1.1\r\n" \
-                + "Host: " + parseResult.hostname + "\r\n"    \
-                + "Accept: */*\r\n"                           \
+        # made request and send it
+        request = "GET   " + parseResult.path     + " HTTP/1.1\r\n" \
+                + "Host: " + parseResult.hostname + "\r\n"          \
+                + "Accept: */*\r\n"                                 \
                 + "Connection: close\r\n\r\n"
         incomingSocket.send(request)
 
+        # get response of the sent request 
         response = self.recvall(incomingSocket)
-        code = self.get_code(response)
-        body = self.get_body(response)
+        code     = self.get_code(response)
+        body     = self.get_body(response)
         return HTTPRequest(code, body)
     
     def POST(self, url, args=None):
+        # get or make a content for POST
         if (args != None):
             postContent = urllib.urlencode(args)
         else:
             postContent = ""
-        postContentLength = len(postContent)
 
-        parseResult    = urlparse(url)
-        incomingSocket = self.connect(parseResult.hostname, parseResult.port)
+        # get parseRequest and Content-Length
+        parseResult       = urlparse(url)
+        postContentLength = len(postContent)
+        incomingSocket    = self.connect(parseResult.hostname,parseResult.port)
         
-        request = "POST " + parseResult.path + " HTTP/1.1\r\n"             \
+        # made request and send it
+        request = "POST  " + parseResult.path     + " HTTP/1.1\r\n"        \
                 + "Host: " + parseResult.hostname + "\r\n"                 \
                 + "Accept: */*\r\n"                                        \
                 + "Content-Type: application/x-www-form-urlencoded\r\n"    \
@@ -103,11 +107,13 @@ class HTTPClient(object):
                 + postContent + "\r\n"
         incomingSocket.send(request)
 
+        # get response of the sent request 
         response = self.recvall(incomingSocket)
-        code = self.get_code(response)
-        body = self.get_body(response)
+        code     = self.get_code(response)
+        body     = self.get_body(response)
         return HTTPRequest(code, body)
 
+    # I changed the initial order of input argv because GET is before URL
     def command(self, command, url, args=None):
         if (command == "POST"):
             return self.POST( url, args )
