@@ -29,6 +29,12 @@ import urllib
 
 # get help from https://docs.python.org/2/library/urlparse.html
 from urlparse import urlparse
+import sys
+import socket
+import re
+# you may use urllib to encode data appropriately
+import urllib
+from urlparse import urlparse
 
 def help():
     print "httpclient.py [GET/POST] [URL]\n"
@@ -40,28 +46,27 @@ class HTTPRequest(object):
 
 class HTTPClient(object):
     #def get_host_port(self,url):
-	
+
     def connect(self, host, port):
         # use sockets!
         if not port:
-            port = 80
+            port = 80       
         outgoingSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         outgoingSocket.connect((host, port))
         return outgoingSocket
 
     def get_code(self, data):
-        return data.split(' ', 2)[1]
+        return int(data.split()[1])
 
     def get_headers(self,data):
         return data.split('\r\n\r\n')[0]
 
     def get_body(self, data):
-        return data.split('\r\n\r\n', 2)[1]
+        return data.split('\r\n\r\n')[1]
 
-    # read everything from the socket
     def recvall(self, sock):
         buffer = bytearray()
-        done   = False
+        done = False
         while not done:
             part = sock.recv(1024)
             if (part):
@@ -72,7 +77,8 @@ class HTTPClient(object):
 
     def GET(self, url, args=None):
         parseResult    = urlparse(url)
-        incomingSocket = self.connect(parseResult.hostname,parseResult.port)
+        incomingSocket = self.connect(parseResult.hostname, parseResult.port)
+        
         request = "GET " + parseResult.path + " HTTP/1.1\r\n" \
                 + "Host: " + parseResult.hostname + "\r\n"    \
                 + "Accept: */*\r\n"                           \
@@ -80,19 +86,20 @@ class HTTPClient(object):
         incomingSocket.send(request)
 
         response = self.recvall(incomingSocket)
-        code     = self.get_code(response)
-        body     = self.get_body(response)
+        code = self.get_code(response)
+        body = self.get_body(response)
         return HTTPRequest(code, body)
-
+    
     def POST(self, url, args=None):
-        if (args !=  None):
+        if (args != None):
             postContent = urllib.urlencode(args)
         else:
             postContent = ""
-
         postContentLength = len(postContent)
-        parseResult       = urlparse(url)
-        incomingSocket    = self.connect(parseResult.hostname,parseResult.port)
+        
+        parseResult    = urlparse(url)
+        incomingSocket = self.connect(parseResult.hostname, parseResult.port)
+        
         request = "POST " + parseResult.path + " HTTP/1.1\r\n"             \
                 + "Host: " + parseResult.hostname + "\r\n"                 \
                 + "Accept: */*\r\n"                                        \
@@ -102,10 +109,8 @@ class HTTPClient(object):
         incomingSocket.send(request)
 
         response = self.recvall(incomingSocket)
-        code     = self.get_code(response)
-        body     = self.get_body(response)
-        #print(code)
-        #print(body)
+        code = self.get_code(response)
+        body = self.get_body(response)
         return HTTPRequest(code, body)
 
     def command(self, command, url, args=None):
@@ -113,7 +118,7 @@ class HTTPClient(object):
             return self.POST( url, args )
         else:
             return self.GET( url, args )
-    
+
 if __name__ == "__main__":
     client = HTTPClient()
     command = "GET"
@@ -123,4 +128,4 @@ if __name__ == "__main__":
     elif (len(sys.argv) == 3):
         print client.command( sys.argv[1], sys.argv[2] )
     else:
-        print client.command( command, sys.argv[1] )    
+        print ( command, sys.argv[1] )   
