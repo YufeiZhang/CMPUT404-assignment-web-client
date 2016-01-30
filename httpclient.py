@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
-# Copyright 2013 Abram Hindle
+# Copyright 2016 Abram Hindle, https://github.com/tywtyw2002, and https://github.com/treedust
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ from urlparse import urlparse
 def help():
     print "httpclient.py [GET/POST] [URL]\n"
 
-class HTTPRequest(object):
+class HTTPResponse(object):
     def __init__(self, code=200, body=""):
         self.code = code
         self.body = body
@@ -69,6 +69,7 @@ class HTTPClient(object):
         return str(buffer)
 
     def GET(self, url, args=None):
+<<<<<<< HEAD
         # use urlparse to get ParseRequest
         parseResult    = urlparse(url)
         incomingSocket = self.connect(parseResult.hostname, parseResult.port)
@@ -79,6 +80,11 @@ class HTTPClient(object):
                 + "Accept: */*\r\n"                                 \
                 + "Connection: close\r\n\r\n"
         incomingSocket.send(request)
+=======
+        code = 500
+        body = ""
+        return HTTPResponse(code, body)
+>>>>>>> abramhindle/master
 
         # get response of the sent request 
         response = self.recvall(incomingSocket)
@@ -87,6 +93,7 @@ class HTTPClient(object):
         return HTTPRequest(code, body)
     
     def POST(self, url, args=None):
+<<<<<<< HEAD
         # get or make a content for POST
         if (args != None):
             postContent = urllib.urlencode(args)
@@ -112,6 +119,11 @@ class HTTPClient(object):
         code     = self.get_code(response)
         body     = self.get_body(response)
         return HTTPRequest(code, body)
+=======
+        code = 500
+        body = ""
+        return HTTPResponse(code, body)
+>>>>>>> abramhindle/master
 
     # I changed the initial order of input argv because GET is before URL
     def command(self, command, url, args=None):
@@ -127,6 +139,10 @@ if __name__ == "__main__":
         help()
         sys.exit(1)
     elif (len(sys.argv) == 3):
-        print client.command( sys.argv[1], sys.argv[2] )
+        print client.command( sys.argv[2], sys.argv[1] )
     else:
+<<<<<<< HEAD
         print ( command, sys.argv[1] )   
+=======
+        print client.command( sys.argv[1] )   
+>>>>>>> abramhindle/master
