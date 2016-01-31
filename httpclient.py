@@ -84,7 +84,7 @@ class HTTPClient(object):
         response = self.recvall(incomingSocket)
         code     = self.get_code(response)
         body     = self.get_body(response)
-        return HTTPRequest(code, body)
+        return HTTPResponse(code, body)
     
     def POST(self, url, args=None):
         # get or make a content for POST
@@ -111,7 +111,7 @@ class HTTPClient(object):
         response = self.recvall(incomingSocket)
         code     = self.get_code(response)
         body     = self.get_body(response)
-        return HTTPRequest(code, body)
+        return HTTPResponse(code, body)
 
     # I changed the initial order of input argv because GET is before URL
     def command(self, command, url, args=None):
@@ -129,4 +129,4 @@ if __name__ == "__main__":
     elif (len(sys.argv) == 3):
         print client.command( sys.argv[2], sys.argv[1] )
     else:
-        print client.command( sys.argv[1] )   
+        print client.command( sys.argv[1] )
